@@ -21,11 +21,18 @@ export type LoginInput = z.infer<typeof loginSchema>['body'];
 const productFieldsSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
   images: z.union([
-    z.string().min(1, 'Product image is required'),
-    z.array(z.string().min(1, 'Product image is required')).min(1, 'At least one product image is required'),
+    z.string(),
+    z.array(z.string()),
+    z.null(),
   ])
-    .transform((images) => typeof images === 'string' ? [images] : images)
-    .default([]),
+    .optional()
+    .transform((images) => {
+      if (!images) return [];
+      if (typeof images === 'string') {
+        return images.trim() ? [images.trim()] : [];
+      }
+      return images.filter((image) => image.trim().length > 0);
+    }),
   price: z.coerce.number().positive('Price must be greater than zero'),
   desc: z.string().nullable().optional(),
 });

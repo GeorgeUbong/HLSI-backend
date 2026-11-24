@@ -11,7 +11,9 @@ app.use(express.json());
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1', userRoutes);
 
-
+app.get('/', (req, res) => {
+  res.status(200).json({message: "the app is on"})
+});
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
